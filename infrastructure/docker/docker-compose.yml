@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  bitcoind:
+    image: lncm/bitcoind:v26.0
+    container_name: continuum-bitcoind
+    environment:
+      - BITCOIN_DATA=/data
+    volumes:
+      - bitcoin_data:/data
+      - ./bitcoin.conf:/data/bitcoin.conf
+    ports:
+      - "18443:18443" # JSON-RPC interface
+      - "18444:18444" # P2P network traffic boundary
+      - "28332:28332" # ZMQ block subscription stream
+      - "28333:28333" # ZMQ transaction subscription stream
+    command: ["-conf=/data/bitcoin.conf", "-datadir=/data"]
+    healthcheck:
+      test: ["CMD", "bitcoin-cli", "-regtest", "-rpcuser=continuum", "-rpcpassword=finality", "getblockchaininfo"]
+      interval: 3s
+      timeout: 2s
+      retries: 5
+
+  lnd:
+    image: lightninglabs/lnd:v0.17.4-beta
+    container_name: continuum-lnd
+    depends_on:
+      bitcoind:
+        condition: service_healthy
+    ports:
+      - "9735:9735"   # Peer-to-peer connection channel
+      - "10009:10009" # gRPC connection pipeline (Used by your Go API)
+      - "8081:8080"   # REST API gateway mapping
+    volumes:
+      - lnd_data:/root/.lnd
+      - ./lnd.conf:/root/.lnd/lnd.conf
+      # Using an absolute path inside your workspace solves the execution directory mismatch
+      - /workspaces/Continuum/infrastructure/docker/lnd_data/password.txt:/root/.lnd/password.txt
+    command: ["--configfile=/root/.lnd/lnd.conf"]
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: continuum-db
+    environment:
+      POSTGRES_DB: continuum
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../../apps/api/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  bitcoin_data:
+  lnd_data:
+  postgres_data:

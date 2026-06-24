@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CONTINUUM | Vault Management Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Geist:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .armed-header {
+            background: repeating-linear-gradient(
+                45deg,
+                #00dbe9,
+                #00dbe9 10px,
+                #000 10px,
+                #000 20px
+            );
+        }
+        .scanner-line {
+            height: 1px;
+            background: #00dbe9;
+            box-shadow: 0 0 8px #00dbe9;
+            position: absolute;
+            width: 100%;
+            z-index: 10;
+            animation: scan 4s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        .hold-confirm {
+            transition: width 2s linear;
+        }
+        .glow-cyan {
+            box-shadow: 0 0 12px rgba(0, 219, 233, 0.2);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-container": "#6b4b00",
+                      "surface-container-highest": "#353534",
+                      "surface-container": "#201f1f",
+                      "inverse-primary": "#006970",
+                      "on-tertiary-fixed": "#410003",
+                      "background": "#131313",
+                      "inverse-surface": "#e5e2e1",
+                      "surface-dim": "#131313",
+                      "on-secondary": "#412d00",
+                      "tertiary-container": "#ffcec9",
+                      "tertiary-fixed": "#ffdad6",
+                      "primary-container": "#00f0ff",
+                      "secondary-fixed": "#ffdea8",
+                      "error-container": "#93000a",
+                      "on-primary-container": "#006970",
+                      "on-tertiary": "#680008",
+                      "surface-tint": "#00dbe9",
+                      "on-background": "#e5e2e1",
+                      "surface-container-low": "#1c1b1b",
+                      "on-surface-variant": "#b9cacb",
+                      "secondary-container": "#feb700",
+                      "on-tertiary-fixed-variant": "#930010",
+                      "on-primary": "#00363a",
+                      "surface-variant": "#353534",
+                      "surface-container-lowest": "#0e0e0e",
+                      "error": "#ffb4ab",
+                      "outline-variant": "#3b494b",
+                      "on-error": "#690005",
+                      "outline": "#849495",
+                      "surface-container-high": "#2a2a2a",
+                      "tertiary-fixed-dim": "#ffb3ac",
+                      "secondary-fixed-dim": "#ffba20",
+                      "on-surface": "#e5e2e1",
+                      "primary-fixed-dim": "#00dbe9",
+                      "secondary": "#ffdb9d",
+                      "primary": "#dbfcff",
+                      "on-tertiary-container": "#c10018",
+                      "primary-fixed": "#7df4ff",
+                      "on-primary-fixed-variant": "#004f54",
+                      "on-secondary-fixed-variant": "#5e4200",
+                      "inverse-on-surface": "#313030",
+                      "surface": "#131313",
+                      "tertiary": "#fff3f2",
+                      "surface-bright": "#3a3939",
+                      "on-secondary-fixed": "#271900",
+                      "on-primary-fixed": "#002022",
+                      "on-error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-md": "24px",
+                      "margin-mobile": "20px",
+                      "margin-desktop": "64px",
+                      "stack-sm": "8px",
+                      "unit": "4px",
+                      "stack-lg": "48px",
+                      "gutter": "24px",
+                      "container-max": "1200px"
+              },
+              "fontFamily": {
+                      "label-mono": ["JetBrains Mono"],
+                      "headline-xl": ["Geist"],
+                      "headline-lg": ["Geist"],
+                      "headline-lg-mobile": ["Geist"],
+                      "data-lg": ["JetBrains Mono"],
+                      "body-md": ["Inter"],
+                      "status-sm": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "label-mono": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                      "data-lg": ["20px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "status-sm": ["12px", {"lineHeight": "1", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-background/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed-dim" data-icon="security">security</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold tracking-tighter text-primary-fixed-dim">CONTINUUM</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="notifications">notifications</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant flex items-center justify-center overflow-hidden">
+<img alt="User" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8e8IGx8DHqMRKQ9uD0yreuQV7XGPPb9cuVrATLLI6KSbjDBiYE0fl1vkgjXRdxpp17yz-YHggaMudC9aLp-TkpZfeVmXWQvpX3xsLNVNBAboeMXJs55iNYTs8YnVmvjKPEUXXeDrcAbb4vAuo8xaIb8_r9zOsOCI3z5a_cedwIAknjebtYXRRJchHmPyW1cWW8pEw1TkgPom8hc8BWwaUoL3J5A9V88G83l_B4VI5io5PonujFDtAzaH_arQoV8RZKT2NzbGf_FU"/>
+</div>
+</div>
+</header>
+<main class="mt-24 px-margin-mobile max-w-container-max mx-auto space-y-stack-lg">
+<!-- Hero Section: Balance & Identity -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-end">
+<div class="md:col-span-8">
+<div class="flex items-center gap-2 mb-2">
+<span class="bg-primary-container text-on-primary-container px-2 py-0.5 font-label-mono text-status-sm">VAULT_ID: 0x8F22...E4</span>
+<span class="bg-surface-container-highest text-primary-fixed-dim border border-primary-fixed-dim/30 px-2 py-0.5 font-label-mono text-status-sm uppercase">Secured</span>
+</div>
+<div class="flex items-baseline gap-4">
+<h2 class="font-headline-xl text-headline-xl tracking-tight text-white">4.829012</h2>
+<div class="flex flex-col">
+<span class="font-label-mono text-primary-fixed-dim flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="bolt">bolt</span>
+                            BTC
+                        </span>
+<span class="font-label-mono text-outline text-status-sm">≈ $302,194.42 USD</span>
+</div>
+</div>
+</div>
+<div class="md:col-span-4 flex justify-end gap-stack-sm pb-2">
+<button class="px-4 py-2 border border-outline text-on-surface font-label-mono text-status-sm hover:bg-surface-container-highest transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="history">history</span>
+                    LOGS
+                </button>
+<button class="px-4 py-2 bg-primary-fixed-dim text-on-primary font-label-mono text-status-sm font-bold glow-cyan flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                    DEPOSIT
+                </button>
+</div>
+</section>
+<!-- Interactive Timeline (The Pulse) -->
+<section class="relative bg-surface-container-lowest border border-outline-variant p-6 overflow-hidden">
+<div class="scanner-line"></div>
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-label-mono text-primary-fixed-dim uppercase tracking-widest text-status-sm">Terminal Timeline</h3>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-fixed-dim animate-pulse"></span>
+<span class="font-label-mono text-status-sm text-outline">WATCHDOG_ACTIVE</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+<!-- Progress Line Connector (Desktop) -->
+<div class="hidden md:block absolute top-1/2 left-0 w-full h-[1px] bg-outline-variant -translate-y-1/2"></div>
+<!-- Timeline Nodes -->
+<div class="relative z-10 space-y-4">
+<div class="w-4 h-4 bg-primary-fixed-dim rounded-sm mx-auto md:mx-0 shadow-[0_0_8px_#00dbe9]"></div>
+<div class="text-center md:text-left">
+<p class="font-label-mono text-status-sm text-outline">LAST CHECK-IN</p>
+<p class="font-data-lg text-data-lg text-white">02:14:55 <span class="text-xs text-outline font-normal">AGO</span></p>
+</div>
+</div>
+<div class="relative z-10 space-y-4">
+<div class="w-4 h-4 bg-primary-fixed-dim rounded-sm mx-auto md:mx-0"></div>
+<div class="text-center md:text-left">
+<p class="font-label-mono text-status-sm text-outline">NEXT EXPECTED</p>
+<p class="font-data-lg text-data-lg text-white">T-21:45:05</p>
+</div>
+</div>
+<div class="relative z-10 space-y-4">
+<div class="w-4 h-4 border-2 border-secondary-fixed-dim bg-background rounded-sm mx-auto md:mx-0"></div>
+<div class="text-center md:text-left">
+<p class="font-label-mono text-status-sm text-outline">TRIGGER POINT</p>
+<p class="font-data-lg text-data-lg text-secondary-fixed-dim">IN 30 DAYS</p>
+</div>
+</div>
+<div class="relative z-10 space-y-4 opacity-40">
+<div class="w-4 h-4 border-2 border-outline bg-background rounded-sm mx-auto md:mx-0"></div>
+<div class="text-center md:text-left">
+<p class="font-label-mono text-status-sm text-outline">RECOVERY PHASE</p>
+<p class="font-data-lg text-data-lg text-on-surface-variant">IN 35 DAYS</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Beneficiaries List -->
+<div class="lg:col-span-7 space-y-stack-md">
+<div class="flex justify-between items-center">
+<h3 class="font-headline-lg-mobile text-white">Beneficiaries</h3>
+<button class="text-primary-fixed-dim font-label-mono text-status-sm flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-[16px]" data-icon="person_add">person_add</span>
+                        MANAGE
+                    </button>
+</div>
+<div class="space-y-stack-sm">
+<!-- Beneficiary Card -->
+<div class="bg-surface-container border border-outline-variant p-4 flex items-center justify-between hover:bg-surface-container-high transition-all group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-highest border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-outline" data-icon="family_history">family_history</span>
+</div>
+<div>
+<h4 class="text-white font-semibold">Sarah J. Continuum</h4>
+<p class="font-label-mono text-status-sm text-outline">SARAH_PRIMARY_RECOVERY.PGP</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex flex-col items-end">
+<span class="text-primary-fixed-dim font-label-mono text-status-sm">40% ALLOCATION</span>
+<span class="text-outline font-label-mono text-[10px] uppercase">Encrypted: AES-256</span>
+</div>
+<span class="material-symbols-outlined text-primary-fixed-dim" data-icon="verified_user">verified_user</span>
+</div>
+</div>
+<!-- Beneficiary Card 2 -->
+<div class="bg-surface-container border border-outline-variant p-4 flex items-center justify-between hover:bg-surface-container-high transition-all group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-highest border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-outline" data-icon="charity">clarify</span>
+</div>
+<div>
+<h4 class="text-white font-semibold">The Open Source Fund</h4>
+<p class="font-label-mono text-status-sm text-outline">0xBE...D34C</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex flex-col items-end">
+<span class="text-primary-fixed-dim font-label-mono text-status-sm">60% ALLOCATION</span>
+<span class="text-outline font-label-mono text-[10px] uppercase">Encrypted: CURVE25519</span>
+</div>
+<span class="material-symbols-outlined text-primary-fixed-dim" data-icon="verified_user">verified_user</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Dead Man's Switch Controls -->
+<div class="lg:col-span-5 space-y-stack-md">
+<h3 class="font-headline-lg-mobile text-white">System Controls</h3>
+<!-- Dead Man's Switch Component -->
+<div class="bg-surface-container-lowest border border-outline-variant relative overflow-hidden group">
+<div class="armed-header h-1 w-full"></div>
+<div class="p-6 space-y-4">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-label-mono text-primary-fixed-dim text-status-sm">CONTROL_MODULE</p>
+<h4 class="text-xl font-bold text-white uppercase tracking-tight">Extend Pulse</h4>
+</div>
+<span class="material-symbols-outlined text-primary-fixed-dim" data-icon="timer">timer</span>
+</div>
+<p class="text-on-surface-variant text-sm">Resets the inactivity timer to your baseline (30 days). Requires biometric verification.</p>
+<!-- Interactive Hold Button -->
+<div class="relative mt-6">
+<button class="w-full h-14 bg-surface-container-highest border border-outline text-white font-label-mono text-sm tracking-widest relative overflow-hidden group-active:scale-95 transition-transform duration-100" id="hold-trigger">
+<div class="absolute left-0 top-0 h-full w-0 bg-primary-fixed-dim/20 transition-all duration-75" id="hold-progress"></div>
+<span class="relative z-10 flex items-center justify-center gap-2">
+                                    HOLD TO CONFIRM EXTENSION
+                                </span>
+</button>
+</div>
+</div>
+</div>
+<!-- Secondary Actions Grid -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex flex-col gap-4 p-4 border border-outline-variant hover:border-primary-fixed-dim/50 hover:bg-surface-container-high transition-all text-left">
+<span class="material-symbols-outlined text-primary-fixed-dim" data-icon="experiment">experiment</span>
+<div>
+<p class="font-bold text-white text-sm">Test Recovery</p>
+<p class="text-outline text-xs">Simulate trigger</p>
+</div>
+</button>
+<button class="flex flex-col gap-4 p-4 border border-outline-variant hover:border-error/50 hover:bg-error-container/10 transition-all text-left">
+<span class="material-symbols-outlined text-error" data-icon="dangerous">dangerous</span>
+<div>
+<p class="font-bold text-error text-sm">Dissolve Vault</p>
+<p class="text-outline text-xs">Purge all assets</p>
+</div>
+</button>
+</div>
+</div>
+</div>
+<!-- System Visualization / Atmospheric -->
+<section class="lg:col-span-12 h-64 bg-surface-container-lowest border border-outline-variant relative overflow-hidden flex items-center justify-center">
+
+<div class="relative z-10 text-center space-y-2">
+<p class="font-label-mono text-primary-fixed-dim text-status-sm tracking-[0.5em] animate-pulse">MONITORING_INTEGRITY: 99.999%</p>
+<div class="flex gap-1 justify-center">
+<div class="w-1 h-4 bg-primary-fixed-dim opacity-40"></div>
+<div class="w-1 h-6 bg-primary-fixed-dim opacity-60"></div>
+<div class="w-1 h-3 bg-primary-fixed-dim opacity-30"></div>
+<div class="w-1 h-8 bg-primary-fixed-dim"></div>
+<div class="w-1 h-5 bg-primary-fixed-dim opacity-50"></div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-safe bg-surface-container-lowest/95 backdrop-blur-sm h-20 border-t border-outline-variant">
+<a class="flex flex-col items-center justify-center text-primary-fixed-dim font-bold border-t-2 border-primary-fixed-dim pt-2" href="#">
+<span class="material-symbols-outlined" data-icon="key">key</span>
+<span class="font-label-mono text-status-sm">Vaults</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline pt-2 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="fingerprint">fingerprint</span>
+<span class="font-label-mono text-status-sm">Life-Check</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline pt-2 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-mono text-status-sm">Beneficiaries</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline pt-2 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-mono text-status-sm">History</span>
+</a>
+</nav>
+<script>
+        const holdTrigger = document.getElementById('hold-trigger');
+        const holdProgress = document.getElementById('hold-progress');
+        let holdTimer;
+        let progress = 0;
+
+        holdTrigger.addEventListener('mousedown', () => {
+            progress = 0;
+            holdProgress.style.width = '100%';
+            holdProgress.style.transition = 'width 2s linear';
+            
+            holdTimer = setTimeout(() => {
+                alert('VAULT_PULSE_EXTENDED: Inactivity timer has been reset to 30 days.');
+                resetHold();
+            }, 2000);
+        });
+
+        holdTrigger.addEventListener('mouseup', resetHold);
+        holdTrigger.addEventListener('mouseleave', resetHold);
+
+        function resetHold() {
+            clearTimeout(holdTimer);
+            holdProgress.style.transition = 'width 0.3s ease-out';
+            holdProgress.style.width = '0%';
+        }
+
+        // Mobile touch events
+        holdTrigger.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            progress = 0;
+            holdProgress.style.width = '100%';
+            holdProgress.style.transition = 'width 2s linear';
+            holdTimer = setTimeout(() => {
+                alert('VAULT_PULSE_EXTENDED: Inactivity timer has been reset to 30 days.');
+                resetHold();
+            }, 2000);
+        });
+        holdTrigger.addEventListener('touchend', resetHold);
+    </script>
+</body></html>

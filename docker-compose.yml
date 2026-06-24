@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  bitcoind:
+    image: lncm/bitcoind:v26.0
+    container_name: continuum-bitcoind
+    environment:
+      - BITCOIN_DATA=/data
+    volumes:
+      - bitcoin_data:/data
+    ports:
+      - "18443:18443"
+      - "18444:18444"
+    command:
+      - -regtest=1
+      - -rpcbind=0.0.0.0
+      - -rpcallowip=0.0.0.0/0
+      - -rpcuser=continuum
+      - -rpcpassword=finality
+      - -fallbackfee=0.0002
+      - -txindex=1
+
+  lnd:
+    image: lightninglabs/lnd:v0.17.4-beta
+    container_name: continuum-lnd
+    depends_on:
+      - bitcoind
+    ports:
+      - "9735:9735"
+      - "10009:10009" # gRPC API Interface mapping
+      - "8081:8080"   # REST API Interface mapping
+    volumes:
+      - lnd_data:/root/.lnd
+    command:
+      - --bitcoin.active
+      - --bitcoin.regtest
+      - --bitcoin.node=bitcoind
+      - --bitcoind.rpchost=bitcoind:18443
+      - --bitcoind.rpcuser=continuum
+      - --bitcoind.rpcpassword=finality
+      - --rpclisten=0.0.0.0:10009
+      - --restlisten=0.0.0.0:8080
+      - --bitcoin.defaultchanfee=1
+      - --bitcoin.defaultminhtlc=1
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: continuum-db
+    environment:
+      POSTGRES_DB: continuum
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  bitcoin_data:
+  lnd_data:
+  postgres_data:

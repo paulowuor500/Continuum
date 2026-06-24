@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CONTINUUM | Proof-of-Life Verification</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Inter:wght@400;600&amp;family=Geist:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanning-line {
+            background: linear-gradient(to bottom, transparent, #00dbe9, transparent);
+            height: 2px;
+            width: 100%;
+            position: absolute;
+            top: -2px;
+            animation: scan 4s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+        .glow-cyan {
+            box-shadow: 0 0 15px rgba(0, 219, 233, 0.2);
+        }
+        .armed-header {
+            background: repeating-linear-gradient(
+                45deg,
+                #00dbe9,
+                #00dbe9 10px,
+                #000 10px,
+                #000 20px
+            );
+            height: 4px;
+            width: 100%;
+        }
+        .hold-progress {
+            transition: width 0.1s linear;
+        }
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            overflow-x: hidden;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-container": "#6b4b00",
+                      "surface-container-highest": "#353534",
+                      "surface-container": "#201f1f",
+                      "inverse-primary": "#006970",
+                      "on-tertiary-fixed": "#410003",
+                      "background": "#131313",
+                      "inverse-surface": "#e5e2e1",
+                      "surface-dim": "#131313",
+                      "on-secondary": "#412d00",
+                      "tertiary-container": "#ffcec9",
+                      "tertiary-fixed": "#ffdad6",
+                      "primary-container": "#00f0ff",
+                      "secondary-fixed": "#ffdea8",
+                      "error-container": "#93000a",
+                      "on-primary-container": "#006970",
+                      "on-tertiary": "#680008",
+                      "surface-tint": "#00dbe9",
+                      "on-background": "#e5e2e1",
+                      "surface-container-low": "#1c1b1b",
+                      "on-surface-variant": "#b9cacb",
+                      "secondary-container": "#feb700",
+                      "on-tertiary-fixed-variant": "#930010",
+                      "on-primary": "#00363a",
+                      "surface-variant": "#353534",
+                      "surface-container-lowest": "#0e0e0e",
+                      "error": "#ffb4ab",
+                      "outline-variant": "#3b494b",
+                      "on-error": "#690005",
+                      "outline": "#849495",
+                      "surface-container-high": "#2a2a2a",
+                      "tertiary-fixed-dim": "#ffb3ac",
+                      "secondary-fixed-dim": "#ffba20",
+                      "on-surface": "#e5e2e1",
+                      "primary-fixed-dim": "#00dbe9",
+                      "secondary": "#ffdb9d",
+                      "primary": "#dbfcff",
+                      "on-tertiary-container": "#c10018",
+                      "primary-fixed": "#7df4ff",
+                      "on-primary-fixed-variant": "#004f54",
+                      "on-secondary-fixed-variant": "#5e4200",
+                      "inverse-on-surface": "#313030",
+                      "surface": "#131313",
+                      "tertiary": "#fff3f2",
+                      "surface-bright": "#3a3939",
+                      "on-secondary-fixed": "#271900",
+                      "on-primary-fixed": "#002022",
+                      "on-error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-md": "24px",
+                      "margin-mobile": "20px",
+                      "margin-desktop": "64px",
+                      "stack-sm": "8px",
+                      "unit": "4px",
+                      "stack-lg": "48px",
+                      "gutter": "24px",
+                      "container-max": "1200px"
+              },
+              "fontFamily": {
+                      "label-mono": ["JetBrains Mono"],
+                      "headline-xl": ["Geist"],
+                      "headline-lg": ["Geist"],
+                      "headline-lg-mobile": ["Geist"],
+                      "data-lg": ["JetBrains Mono"],
+                      "body-md": ["Inter"],
+                      "status-sm": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "label-mono": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                      "data-lg": ["20px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "status-sm": ["12px", {"lineHeight": "1", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 bg-background/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed-dim" data-icon="security">security</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold tracking-tighter text-primary-fixed-dim">CONTINUUM</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="font-label-mono text-label-mono text-outline uppercase hidden md:inline">Status: Secure</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant flex items-center justify-center overflow-hidden">
+<img alt="User" class="w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqPtS_BIyEVng2aV1pXvMRZQdEYp_Dg6LhrFPrPaLL7YebsahMhHe2HrxiepCSVCSzGBnnFFzLiw01obO5x4rQcXbMRMD978VB-1vfoEe0Nu67RuKeHlizUEvgdl3PPJCTxC3epdoxnBZ2sQVRedZ0WbgtXpkPlKeND0ElG8dvWMp29Di7wn2VNUj9p4yq7Z3bj_g_gD9SGmB09vaRp5ulSGcOeL1mTQK_gy3oyiZbGGbOFKOVskM8wh9o77ov5obvuAjxpRbrSBA"/>
+</div>
+</div>
+</header>
+<main class="flex-grow pt-24 pb-32 px-margin-mobile md:px-0">
+<div class="max-w-container-max mx-auto md:px-margin-desktop">
+<!-- Imminent Trigger Countdown -->
+<section class="mb-stack-lg text-center">
+<div class="inline-block bg-surface-container-lowest border border-error/30 p-stack-md rounded-lg relative overflow-hidden">
+<div class="absolute top-0 left-0 armed-header opacity-20" style="background: repeating-linear-gradient(45deg, #ffb4ab, #ffb4ab 10px, transparent 10px, transparent 20px);"></div>
+<p class="font-label-mono text-status-sm text-error mb-2 uppercase tracking-widest">Protocol Activation Imminent</p>
+<h1 class="font-label-mono text-[64px] md:text-[80px] leading-none font-bold text-secondary-fixed-dim drop-shadow-[0_0_12px_rgba(255,186,32,0.3)]" id="countdown">
+                        47:59:59
+                    </h1>
+<p class="font-body-md text-body-md text-outline mt-2">Remaining before automated asset distribution sequence begins.</p>
+</div>
+</section>
+<!-- Verification Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Left Column: Status Monitors -->
+<div class="md:col-span-4 flex flex-col gap-gutter">
+<div class="bg-surface-container-lowest border border-outline-variant p-stack-md relative overflow-hidden group">
+<div class="scanning-line"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-mono text-status-sm text-outline uppercase">System Health</span>
+<div class="bg-primary-container text-on-primary-container px-2 py-0.5 rounded-sm font-label-mono text-status-sm">ACTIVE</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between border-b border-outline-variant/30 pb-1">
+<span class="font-label-mono text-status-sm text-outline">Network</span>
+<span class="font-label-mono text-status-sm text-primary-fixed-dim">ENCRYPTED</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant/30 pb-1">
+<span class="font-label-mono text-status-sm text-outline">Uptime</span>
+<span class="font-label-mono text-status-sm text-primary-fixed-dim">99.999%</span>
+</div>
+<div class="flex justify-between">
+<span class="font-label-mono text-status-sm text-outline">Location</span>
+<span class="font-label-mono text-status-sm text-primary-fixed-dim">SECURE_NODE_7</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-stack-md">
+<h3 class="font-label-mono text-label-mono text-primary-fixed-dim mb-4 uppercase">Verification Logs</h3>
+<div class="space-y-4 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+<div class="flex gap-3 items-start opacity-60">
+<span class="font-label-mono text-[10px] text-outline mt-1">12:04:12</span>
+<p class="font-label-mono text-status-sm">Auth check-in skipped.</p>
+</div>
+<div class="flex gap-3 items-start">
+<span class="font-label-mono text-[10px] text-outline mt-1">08:00:00</span>
+<p class="font-label-mono text-status-sm">Daily timer reset successful via Biometric ID.</p>
+</div>
+<div class="flex gap-3 items-start opacity-60">
+<span class="font-label-mono text-[10px] text-outline mt-1">23:59:59</span>
+<p class="font-label-mono text-status-sm">System integrity scan: No anomalies detected.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Verification Methods -->
+<div class="md:col-span-8 space-y-gutter">
+<!-- Primary: Dead Man's Switch -->
+<div class="bg-surface-container-lowest border border-outline-variant p-stack-lg text-center relative overflow-hidden">
+<div class="armed-header absolute top-0 left-0"></div>
+<h2 class="font-headline-lg text-headline-lg mb-2 text-on-background">I AM ALIVE</h2>
+<p class="font-body-md text-body-md text-outline mb-stack-lg">Hold for 3 seconds to reset all countdowns and verify vital status.</p>
+<div class="relative inline-block group">
+<button class="relative z-10 w-48 h-48 rounded-full border-4 border-primary-fixed-dim bg-background flex flex-col items-center justify-center transition-all active:scale-95 duration-75 group-active:glow-cyan" id="dead-mans-switch">
+<span class="material-symbols-outlined text-5xl text-primary-fixed-dim mb-2" data-icon="fingerprint">fingerprint</span>
+<span class="font-label-mono text-status-sm text-primary-fixed-dim uppercase tracking-tighter">Maintain Contact</span>
+</button>
+<!-- Progress Ring -->
+<svg class="absolute inset-0 -m-1 w-50 h-50 rotate-[-90deg]" height="200" width="200">
+<circle class="text-surface-container-highest" cx="100" cy="100" fill="transparent" r="92" stroke="currentColor" stroke-width="4"></circle>
+<circle class="text-primary-fixed-dim transition-all duration-100 ease-linear" cx="100" cy="100" fill="transparent" id="progress-circle" r="92" stroke="currentColor" stroke-dasharray="578" stroke-dashoffset="578" stroke-linecap="butt" stroke-width="4"></circle>
+</svg>
+</div>
+</div>
+<!-- Secondary Methods Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Method 1: Biometric -->
+<div class="bg-surface-container-low border border-outline-variant p-stack-md hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 bg-primary-fixed-dim/10 rounded flex items-center justify-center text-primary-fixed-dim">
+<span class="material-symbols-outlined" data-icon="face">face</span>
+</div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile">Face ID / Biometric</h4>
+</div>
+<p class="font-body-md text-status-sm text-outline mb-4">Instant verification using your registered secure hardware enclave.</p>
+<button class="w-full py-2 border border-primary-fixed-dim text-primary-fixed-dim font-label-mono text-status-sm uppercase hover:bg-primary-fixed-dim hover:text-on-primary transition-all">Verify Now</button>
+</div>
+<!-- Method 2: Key Signature -->
+<div class="bg-surface-container-low border border-outline-variant p-stack-md hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 bg-primary-fixed-dim/10 rounded flex items-center justify-center text-primary-fixed-dim">
+<span class="material-symbols-outlined" data-icon="key">key</span>
+</div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile">Cryptographic Sign</h4>
+</div>
+<p class="font-body-md text-status-sm text-outline mb-4">Sign a unique challenge with your master private key locally.</p>
+<button class="w-full py-2 border border-primary-fixed-dim text-primary-fixed-dim font-label-mono text-status-sm uppercase hover:bg-primary-fixed-dim hover:text-on-primary transition-all">Sign Message</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-safe bg-surface-container-lowest/95 backdrop-blur-sm h-20 border-t border-outline-variant">
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline pt-2 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="key">key</span>
+<span class="font-label-mono text-status-sm">Vaults</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary-fixed-dim dark:text-primary-fixed-dim font-bold border-t-2 border-primary-fixed-dim pt-2" href="#">
+<span class="material-symbols-outlined" data-icon="fingerprint" style="font-variation-settings: 'FILL' 1;">fingerprint</span>
+<span class="font-label-mono text-status-sm">Life-Check</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline pt-2 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-mono text-status-sm">Beneficiaries</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline pt-2 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-mono text-status-sm">History</span>
+</a>
+</nav>
+<script>
+        // Countdown Logic
+        let timeLeft = 48 * 3600; // 48 hours in seconds
+        const countdownEl = document.getElementById('countdown');
+
+        function updateCountdown() {
+            const h = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
+            const m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
+            const s = (timeLeft % 60).toString().padStart(2, '0');
+            countdownEl.textContent = `${h}:${m}:${s}`;
+            if (timeLeft > 0) timeLeft--;
+        }
+        setInterval(updateCountdown, 1000);
+
+        // Dead Man's Switch Logic
+        const switchBtn = document.getElementById('dead-mans-switch');
+        const progressCircle = document.getElementById('progress-circle');
+        let holdTimer = null;
+        let holdProgress = 0;
+        const maxHold = 3000; // 3 seconds
+        const dashArray = 578;
+
+        function startHold() {
+            const start = Date.now();
+            holdTimer = setInterval(() => {
+                const elapsed = Date.now() - start;
+                holdProgress = Math.min(elapsed / maxHold, 1);
+                
+                // Update circle
+                const offset = dashArray * (1 - holdProgress);
+                progressCircle.style.strokeDashoffset = offset;
+
+                if (holdProgress >= 1) {
+                    completeVerification();
+                }
+            }, 50);
+        }
+
+        function endHold() {
+            clearInterval(holdTimer);
+            holdProgress = 0;
+            progressCircle.style.strokeDashoffset = dashArray;
+        }
+
+        function completeVerification() {
+            clearInterval(holdTimer);
+            alert("VITAL STATUS VERIFIED. TIMERS RESET.");
+            timeLeft = 48 * 3600;
+            endHold();
+        }
+
+        switchBtn.addEventListener('mousedown', startHold);
+        switchBtn.addEventListener('mouseup', endHold);
+        switchBtn.addEventListener('mouseleave', endHold);
+        switchBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startHold(); });
+        switchBtn.addEventListener('touchend', endHold);
+    </script>
+</body></html>
