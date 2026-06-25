@@ -39,6 +39,25 @@ func connectToDatabaseWithRetry(dataSourceName string) (*repository.Database, er
 	return nil, err
 }
 
+func applyProductionMigrations(db *repository.Database) error {
+	if db == nil || db.Db == nil {
+		return nil
+	}
+
+	migrationSQL, err := os.ReadFile("internal/repository/migrations/001_init.sql")
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Db.Exec(string(migrationSQL))
+	if err != nil {
+		return err
+	}
+
+	log.Println("✅ Database schema check completed.")
+	return nil
+}
+
 func main() {
 	if err := godotenv.Load("../../.env"); err != nil {
 		log.Println("ℹ️  No .env file found — using host environment.")
@@ -53,6 +72,10 @@ func main() {
 	db, err := connectToDatabaseWithRetry(dbURL)
 	if err != nil {
 		log.Fatalf("❌ Database connection failed: %v", err)
+	}
+
+	if err := applyProductionMigrations(db); err != nil {
+		log.Printf("⚠️  Database migration check failed: %v", err)
 	}
 
 	// Lightning service (falls back to mock when LND is not configured)

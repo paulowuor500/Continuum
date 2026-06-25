@@ -21,6 +21,20 @@ else
     exit 1
 fi
 
+# 2. Avoid port collisions from a previously running API or web server
+for port in 8080 3000; do
+    if lsof -i ":$port" >/dev/null 2>&1; then
+        echo "⚠️  Port $port is already in use. Stopping the existing listener to keep the dev stack healthy..."
+        lsof -ti ":$port" | xargs -r kill -9
+    fi
+done
+
+# 3. Clear stale Next.js development processes from earlier runs
+if pgrep -af "[/]workspaces/Continuum/node_modules/.bin/next dev" >/dev/null 2>&1; then
+    echo "🧹 Clearing stale Next.js development processes..."
+    pkill -f "[/]workspaces/Continuum/node_modules/.bin/next dev" || true
+fi
+
 # 2. Source the central environment variables safely into this execution runtime shell
 if [ -f "$ROOT_DIR/.env" ]; then
     echo "📝 Exporting central configuration environment flags..."
@@ -39,7 +53,7 @@ API_PID=$!
 
 echo "⚛️  Starting Web Interface Server Engine (Next.js/Vite)..."
 cd "$ROOT_DIR/apps/web"
-npm run dev &
+PORT=3000 npm run dev -- --port 3000 &
 WEB_PID=$!
 
 # Ensure graceful containment breakdown on termination signals

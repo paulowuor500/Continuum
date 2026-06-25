@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: continuum
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  lnd:
+    image: lightninglabs/lnd:v0.17.4-beta
+    depends_on:
+      - postgres
+    ports:
+      - "10009:10009"
+      - "8081:8080"
+    volumes:
+      - lnd_data:/root/.lnd
+    command:
+      - --bitcoin.active
+      - --bitcoin.regtest
+      - --bitcoin.node=bitcoind
+      - --bitcoind.rpchost=bitcoind:18443
+      - --bitcoind.rpcuser=continuum
+      - --bitcoind.rpcpass=finality
+      - --rpclisten=0.0.0.0:10009
+      - --restlisten=0.0.0.0:8080
+
+  bitcoind:
+    image: lncm/bitcoind:v26.0
+    ports:
+      - "18443:18443"
+      - "18444:18444"
+    volumes:
+      - bitcoin_data:/data
+
+volumes:
+  postgres_data:
+  lnd_data:
+  bitcoin_data:

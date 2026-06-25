@@ -17,8 +17,8 @@ fi
 # This simulates a pre-packaged Base64 string payload generated from encryption.ts
 MOCK_ENCRYPTED_PAYLOAD="eyJlcGhlbWVyYWxQdWJLZXkiOiIwM2U5YSIsIml2IjoiYWYzZSIsImF1dGhUYWciOiI5OWJiIiwiY2lwaGVydGV4dCI6IjEyM2EifQ=="
 
-# 2. Adjusted port to 3000 (assuming Go Fiber standard dev port to avoid LND's 8080 clash)
-API_URL="http://localhost:3000/api/vaults"
+# 2. Send requests to the Fiber API on its real local port
+API_URL="http://localhost:8080/api/vaults"
 
 echo "📡 Transmitting registration payload to local Fiber API endpoint ($API_URL)..."
 echo "🔑 Target Beneficiary Pubkey: $TARGET_PUBKEY"
