@@ -13,7 +13,9 @@
     "db:seed": "ts-node database/seed.ts",
     "dev": "./scripts/start-dev.sh",
     "warp": "./scripts/simulate-death.sh",
-    "gen-vault": "./scripts/generate-vault.sh"
+    "gen-vault": "./scripts/generate-vault.sh",
+    "test": "npm --workspace apps/web run test",
+    "test:api": "cd apps/api && go test ./..."
   },
   "keywords": [
     "bitcoin",

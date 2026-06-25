@@ -17,23 +17,33 @@ import (
 	"github.com/joho/godotenv"
 )
 
+var (
+	databaseConnectFactory = func(dataSourceName string) (*repository.Database, error) {
+		return repository.NewDatabase(dataSourceName)
+	}
+	databaseRetryAttempts = 30
+	databaseRetryDelay   = 2 * time.Second
+)
+
 func connectToDatabaseWithRetry(dataSourceName string) (*repository.Database, error) {
 	var (
 		db  *repository.Database
 		err error
 	)
 
-	for attempt := 1; attempt <= 30; attempt++ {
-		db, err = repository.NewDatabase(dataSourceName)
+	for attempt := 1; attempt <= databaseRetryAttempts; attempt++ {
+		db, err = databaseConnectFactory(dataSourceName)
 		if err == nil {
 			return db, nil
 		}
 
-		log.Printf("⏳ Database connection attempt %d/30 failed: %v", attempt, err)
-		if attempt == 30 {
+		log.Printf("⏳ Database connection attempt %d/%d failed: %v", attempt, databaseRetryAttempts, err)
+		if attempt == databaseRetryAttempts {
 			return nil, err
 		}
-		time.Sleep(2 * time.Second)
+		if databaseRetryDelay > 0 {
+			time.Sleep(databaseRetryDelay)
+		}
 	}
 
 	return nil, err
